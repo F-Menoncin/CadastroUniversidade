@@ -1,4 +1,3 @@
-opcao = 0  
 while True:
     #apresentando o menu inicial
   print("Bem vindo ao menu principal!")
@@ -11,7 +10,6 @@ while True:
 
     #recebendo a resposta do usuário (int para receber a variavel no formato numero ao invés de texto)
   opcao = int(input("Digite o número da opção desejada: "))
-  opcao_secundaria = 0
 
       #apresentando o segundo menu
   if opcao == 6:
@@ -24,7 +22,7 @@ while True:
         print("2. Listar")
         print("3. Excluir")
         print("4. Alterar")
-        print("5. Returnar ao menu inicial")
+        print("5. Returnar ao menu principal")
         opcao_secundaria = int(input("Selecione uma das opções acima: "))
         if opcao_secundaria != 5:
             print(f"Você selecionou a opção {opcao_secundaria}.")
