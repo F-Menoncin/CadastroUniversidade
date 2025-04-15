@@ -1,6 +1,7 @@
 # Felipe Menoncin - Análise e Desenvolvimento de Sistemas
 
-lista_nomes = []
+cadastro_estudantes = {}
+lista_estudantes = []
 #while True para que o loop seja infinito (tem que por um break no meio senão fica infinito) 
 while True:
     #apresentando o menu inicial
@@ -37,23 +38,45 @@ while True:
           opcao_secundaria = -1
         if  opcao_secundaria == 1:
           while True:
-              nome = input('\nDigite o nome que deseja incluir ou a palavra "sair": ')
-              if nome == "sair":
+              estudante = input('\nDigite o nome que deseja incluir ou a palavra "sair": ')
+              if estudante == "sair":
                 break
               else:
+                codigo = int(input('\nDigite o código do estudante: '))
+                cpf = input('\nDigite o CPF do estudante: ')
+                novo_estudante = {
+                  "cod_estudante" : codigo,
+                  "nome_estudante" : estudante,
+                  "cpf_estudante" : cpf 
+                }
                 #append para que a lista possa ser flexível e tenha um número de entradas variável
-                lista_nomes.append(nome) 
+                #cadastro_estudantes.append(estudante) 
+                lista_estudantes.append(novo_estudante)
                 print("\nEstudante adicionado com sucesso!")
         elif  opcao_secundaria == 2:
             #len(variavel) é uma forma de verificar se a lista esta vazia, pois se o comprimento dela (length) for zero, ela está vazia.
-            if len(lista_nomes) == 0:
+            if len(lista_estudantes) == 0:
               print("\nNão há estudantes cadastrados!\n")
             else:
               print("\nAqui está a lista de estudantes: \n")
               #for para listar em linhas diferentes
-              for nome in lista_nomes:
-                print("- " + nome)
-        elif opcao_secundaria == 3 or opcao_secundaria == 4:
+              for estudante in lista_estudantes:
+                cod = estudante["cod_estudante"]
+                nome = estudante["nome_estudante"]
+                cpf = estudante["cpf_estudante"]
+                print(f"{cod}) {nome}, CPF: {cpf}.")
+        elif opcao_secundaria == 3:
+           print("\n===== EM DESENVOLVIMENTO =====")
+            #excluir_estudante = input("Insira o nome do estudante que deseja excluir: ")
+            #for estudante in lista_estudantes:
+              #if estudante["nome_estudante"] == excluir_estudante:
+                  #lista_estudantes.remove(estudante)
+                  #print("Estudante removido com sucesso!")
+                  #break
+              #else:
+                  #print("Estudante não encontrado!")
+                  #break
+        elif opcao_secundaria == 4:
             print("\n===== EM DESENVOLVIMENTO =====")
         elif opcao_secundaria == 5:
            break
