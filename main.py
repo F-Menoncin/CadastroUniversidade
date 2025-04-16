@@ -38,6 +38,7 @@ while True:
           opcao_secundaria = -1
         if  opcao_secundaria == 1:
           while True:
+              print("\nVocê selecionou a opção de incluir um estudante!")
               estudante = input('\nDigite o nome que deseja incluir ou a palavra "sair": ')
               if estudante == "sair":
                 break
@@ -55,6 +56,7 @@ while True:
                 print("\nEstudante adicionado com sucesso!")
         elif  opcao_secundaria == 2:
             #len(variavel) é uma forma de verificar se a lista esta vazia, pois se o comprimento dela (length) for zero, ela está vazia.
+            print("\nVocê selecionou a opção de listar os estudantes cadastrados!")
             if len(lista_estudantes) == 0:
               print("\nNão há estudantes cadastrados!\n")
             else:
@@ -64,18 +66,21 @@ while True:
                 cod = estudante["cod_estudante"]
                 nome = estudante["nome_estudante"]
                 cpf = estudante["cpf_estudante"]
-                print(f"{cod}) {nome}, CPF: {cpf}.")
+                print(f"Estudante: {nome}, CPF: {cpf}, código: {cod}.")
         elif opcao_secundaria == 3:
-           print("\n===== EM DESENVOLVIMENTO =====")
-            #excluir_estudante = input("Insira o nome do estudante que deseja excluir: ")
-            #for estudante in lista_estudantes:
-              #if estudante["nome_estudante"] == excluir_estudante:
-                  #lista_estudantes.remove(estudante)
-                  #print("Estudante removido com sucesso!")
-                  #break
-              #else:
-                  #print("Estudante não encontrado!")
-                  #break
+            print("\nVocê selecionou a opção de excluir o cadastro um estudante!\n")
+            #print("\n===== EM DESENVOLVIMENTO =====")
+            excluir_estudante = input("\nInsira o nome do estudante que deseja excluir: ")
+            encontrado = False
+
+            for estudante in lista_estudantes:
+              if estudante["nome_estudante"] == excluir_estudante:
+                  lista_estudantes.remove(estudante)
+                  print("Estudante removido com sucesso!")
+                  encontrado =  True
+                  break
+            if encontrado == False:
+                  print("Estudante não encontrado!")
         elif opcao_secundaria == 4:
             print("\n===== EM DESENVOLVIMENTO =====")
         elif opcao_secundaria == 5:
