@@ -43,7 +43,11 @@ while True:
               if estudante == "sair":
                 break
               else:
-                codigo = int(input('\nDigite o código do estudante: '))
+                try:
+                  codigo = int(input('\nDigite o código do estudante: '))
+                except ValueError:
+                   print("O código digitado é inválido!")
+                   break
                 cpf = input('\nDigite o CPF do estudante: ')
                 novo_estudante = {
                   "cod_estudante" : codigo,
@@ -69,18 +73,21 @@ while True:
                 print(f"Estudante: {nome}, CPF: {cpf}, código: {cod}.")
         elif opcao_secundaria == 3:
             print("\nVocê selecionou a opção de excluir o cadastro um estudante!\n")
-            #print("\n===== EM DESENVOLVIMENTO =====")
-            excluir_estudante = input("\nInsira o nome do estudante que deseja excluir: ")
-            encontrado = False
+            try:
+              #print("\n===== EM DESENVOLVIMENTO =====")
+              excluir_estudante = int(input("\nInsira o código do estudante que deseja excluir: "))
+              encontrado = False
 
-            for estudante in lista_estudantes:
-              if estudante["nome_estudante"] == excluir_estudante:
-                  lista_estudantes.remove(estudante)
-                  print("Estudante removido com sucesso!")
-                  encontrado =  True
-                  break
-            if encontrado == False:
-                  print("Estudante não encontrado!")
+              for estudante in lista_estudantes:
+                if estudante["cod_estudante"] == excluir_estudante:
+                    lista_estudantes.remove(estudante)
+                    print("Estudante removido com sucesso!")
+                    encontrado =  True
+                    break
+              if encontrado == False:
+                    print("Estudante não encontrado!")
+            except ValueError:
+               print("Erro: O código digitado é inválido.")
         elif opcao_secundaria == 4:
             print("\n===== EM DESENVOLVIMENTO =====")
         elif opcao_secundaria == 5:
