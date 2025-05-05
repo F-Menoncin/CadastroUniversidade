@@ -198,6 +198,7 @@ def incluir_turma():
           lista_turmas.append(nova_turma)
           print("\nTurma adicionada com sucesso!")
 
+#função para incluir matrícula
 def incluir_matriculas():
    while True:
         print("\nVocê selecionou a opção de incluir uma matrícula!")
@@ -235,7 +236,7 @@ def incluir_matriculas():
             }
           #append para que a lista possa ser flexível e tenha um número de entradas variável
           #adicionando o dicionário como uma entrada de uma lista 
-          lista_turmas.append(nova_turma)
+          lista_turmas.append(nova_matricula)
           print("\nMatrícula adicionada com sucesso!")
 
 #função para listar
@@ -328,48 +329,138 @@ def excluir_registro():
   if encontrado == False:
      print(f"{tipo.capitalize()} não encontrado(a)!")
 
-def alterar_estudante():
-    if len(lista_estudantes) == 0:
-            print("\nNão há estudantes cadastrados!")
-            #print("\n===== EM DESENVOLVIMENTO =====")
-    else:
-      print("\nVocê selecionou a opção de alterar o cadastro de um estudante!")
-      try:
-        alt_estudante = int(input("\nInsira o código do estudante que deseja alterar: "))
-        encontrado = False
-        for estudante in lista_estudantes:
-          if estudante["cod_estudante"] == alt_estudante:
-            print("\n1. Nome\n2. CPF\n3. Código")
-            try:
-              o_que_alterar = int(input("\nSelecione o que deseja alterar: "))
-            except ValueError:
-              print("Opção inválida")
-            if o_que_alterar == 1:
-                estudante["nome_estudante"] = input("Digite o novo nome: ")
-                encontrado =  True
-                print("Nome alterado com sucesso!")
-                break
-            elif o_que_alterar == 2:
-                estudante["cpf_estudante"] = input("Digite o novo CPF: ")
-                encontrado =  True
-                print("CPF alterado com sucesso!")
-                break
-            elif o_que_alterar == 3:
-                try:
-                  estudante["cod_estudante"] = int(input("Digite o novo código: "))
-                except ValueError:
-                  print("Valor inválido.")
-                  break
-                encontrado =  True
-                print("Código alterado com sucesso!")
-                break
+#função para alterar
+def alterar_registro():
+  dados = mapeamento_geral.get(opcao)
+  if not dados: #Se não existir a opção
+     print("Opção inválida!")
+     return
+  
+  lista = dados["lista"]
+  tipo = dados["tipo"]
+  campos = dados["campos"]
+
+  if len(lista) == 0:
+    print(f"Não há {tipo}s cadastrados!")
+    return
+  
+  print(f"\nVocê selecionou a opção de alterar o cadastro de {tipo}!")
+
+  try:
+     codigo = int(input(f"\nInsira o código do(a) {tipo} que deseja alterar: "))
+  except ValueError:
+    print("Código inválido!")
+    return
+  
+  encontrado = False
+  for item in lista:
+    if item[campos["codigo"]] == codigo:
+        print("\nItens para alteração:")
+        opcoes = {}
+        i = 1
+        for campo, nome_campo in campos.items():
+           print(f"{i}. {campo.capitalize()}")
+           opcoes[i] = campo
+           i += 1
+
+        try:
+          opcao_alterar = int(input("\nSelecione uma opção para alterar: "))
+        except ValueError:
+          print("Opção inválida!")
+          return
+        
+        if opcao_alterar in opcoes:
+            campo_alterar = opcoes[opcao_alterar]
+        
+            #Verificação especial para código
+            if campo_alterar == "codigo":
+              try:
+                  novo_valor = int(input("Digite o novo código: "))
+              except ValueError:
+                  print("Novo código inválido!")
+                  return
+
+            #Verificação se o novo professor está cadastrado antes de alterar na turma
+            elif campo_alterar == "professor" and tipo == "turma":
+              try:
+                cod_professor = int(input("Digite o código do novo professor: "))
+                professor_encontrado = False
+                for professor in lista_professores:
+                    if professor["cod_professor"] ==  cod_professor:
+                      novo_valor = professor["nome_professor"]
+                      professor_encontrado = True
+                      break
+                if professor_encontrado == False:
+                  print("Professor não encontrado!")
+                  return
+              except ValueError:
+                print("Código inválido!")
+                return
+
+            #Verificação se a nova disciplina está cadastrada antes de alterar na turma
+            elif campo_alterar == "disciplina" and tipo == "turma":
+              try:
+                cod_disciplina = int(input("Digite o código da nova disciplina: "))
+                disciplina_encontrada = False
+                for disciplina in lista_disciplinas:
+                    if disciplina["cod_disciplina"] ==  cod_disciplina:
+                      novo_valor = disciplina["nome_disciplina"]
+                      disciplina_encontrada = True
+                      break
+                if disciplina_encontrada == False:
+                  print("Disciplina não encontrada!")
+                  return
+              except ValueError:
+                print("Código inválido!")
+                return
+
+            #Verificação se a nova turma está cadastrada antes de alterar na matrícula 
+            elif campo_alterar == "codigo" and tipo == "matricula":
+              try:
+                cod_turma = int(input("Digite o código da nova turma: "))
+                turma_encontrada = False
+                for turma in lista_turmas:
+                    if turma["cod_turma"] ==  cod_turma:
+                      novo_valor = turma["cod_turma"]
+                      turma_encontrada = True
+                      break
+                if turma_encontrada == False:
+                  print("Turma não encontrada!")
+                  return
+              except ValueError:
+                print("Código inválido!")
+                return
+
+
+            #Verificação se o novo estudante está cadastrado antes de alterar na turma
+            elif campo_alterar == "estudante" and tipo == "turma":
+              try:
+                cod_estudante = int(input("Digite o código do novo estudante: "))
+                estudante_encontrado = False
+                for estudante in lista_estudantes:
+                    if estudante["cod_estudante"] == cod_estudante:
+                      novo_valor = estudante["nome_estudante"]
+                      estudante_encontrado = True
+                      break
+                if estudante_encontrado == False:
+                  print("Estudante não encontrado!")
+                  return
+              except ValueError:
+                print("Código inválido!")
+                return
             else:
-              print("Opção inválida.")
-              break
-        if encontrado == False:
-          print("Estudante não encontrado!")
-      except ValueError:
-        print("Erro: O código digitado é inválido.") 
+              novo_valor = input(f"Digite o novo {campo_alterar}: ")
+
+            item[campos[campo_alterar]] = novo_valor
+            print(f"{campo_alterar.capitalize()} alterado(a) com sucesso!")
+            encontrado = True      
+
+        else:
+          print("Opção inválida!")
+
+        break 
+  if encontrado == False:
+     print(f"{tipo.capitalize()} não encontrado(a)!")
 
 #while True para que o loop seja infinito (tem que por um break no meio senão fica infinito) 
 while True:
@@ -399,7 +490,7 @@ while True:
             excluir_registro()
 
         elif opcao_secundaria == 4:
-            alterar_estudante()
+            alterar_registro()
 
         elif opcao_secundaria == 5:
            break
