@@ -5,7 +5,53 @@ lista_professores = []
 lista_disciplinas = []
 lista_turmas = []
 lista_matriculas = []
-#while True para que o loop seja infinito (tem que por um break no meio senão fica infinito) 
+
+mapeamento_geral = {
+  1: {
+      "lista": lista_estudantes,
+      "tipo": "estudante",
+      "campos": {
+         "codigo": "cod_estudante",
+         "nome": "nome_estudante",
+         "cpf": "cpf_estudante"
+      }
+  },
+  2: {
+      "lista": lista_professores,
+      "tipo": "professor",
+      "campos": {
+         "codigo": "cod_professor",
+         "nome": "nome_professor",
+         "cpf": "cpf_professor"
+      }
+  },
+  3: {
+      "lista": lista_disciplinas,
+      "tipo": "disciplina",
+      "campos": {
+         "codigo": "cod_disciplina",
+         "nome": "nome_disciplina"
+      }
+  },
+  4: {
+      "lista": lista_turmas,
+      "tipo": "turma",
+      "campos": {
+         "codigo": "cod_turma",
+         "professor": "professor_turma",
+         "disciplina": "disc_turma" 
+      }
+  },
+  5: {
+      "lista": lista_matriculas,
+      "tipo": "matrícula",
+      "campos": {
+         "codigo": "cod_matricula",
+         "estudante": "estud_matricula",
+      }
+  },
+
+}
 
 #função do menu principal
 def abrir_menu_principal():
@@ -29,8 +75,8 @@ def abrir_menu_secundario():
     opcao_secundaria = -1
   return opcao_secundaria
 
-#função para incluir professor ou aluno
-def incluir_estudante_ou_professor():
+#função para incluir estudante, professor ou disciplina pois não dependem de outras listas para serem incluídas
+def incluir_estudante_professor_ou_disciplina():
    while True:
       if opcao == 1:
         print("\nVocê selecionou a opção de incluir um estudante!")
@@ -76,11 +122,7 @@ def incluir_estudante_ou_professor():
           #adicionando o dicionário como uma entrada de uma lista 
           lista_professores.append(novo_professor)
           print("\nProfessor adicionado com sucesso!")
-      else:
-        break
-
-def incluir_disciplina():
-      while True:
+      elif opcao == 3:
         print("\nVocê selecionou a opção de incluir uma disciplina!")
         disciplina = input('\nDigite o nome da disciplina que deseja incluir ou a palavra "sair": ')
         if disciplina == "sair":
@@ -99,11 +141,104 @@ def incluir_disciplina():
           #adicionando o dicionário como uma entrada de uma lista 
           lista_disciplinas.append(nova_disciplina)
           print("\nDisciplina adicionada com sucesso!")
+      else:
+        break
 
-#def incluir_turma():
-#def incluir_matriculas():
+#função para incluir turma
+def incluir_turma():
+      while True:
+        print("\nVocê selecionou a opção de incluir uma turma!")
+        try:
+           codigo_turma = int(input('\nDigite o código da turma que deseja incluir ou o número "0" para sair: '))
+        except ValueError:
+           print("Código inválido!")
+           break
+        if codigo_turma == 0:
+          break
+        else:
+          for turma in lista_turmas:
+             if turma["cod_turma"] == codigo_turma:
+                print("Código de turma já cadastrado!")
+                return
+          try:
+              cod_prof_turma = int(input("\nDigite o código do professor da turma: "))
+              encontrado = False
+              for professor in lista_professores:
+                if professor["cod_professor"] == cod_prof_turma:
+                    prof_turma = professor["nome_professor"]
+                    encontrado =  True
+                    break
+              if encontrado == False:                    
+                print("Professor não encontrado!")
+                break
+          except ValueError:
+            print("Erro: O código digitado é inválido.")
 
+          try:
+              cod_disc_turma = int(input("\nDigite o código da disciplina da turma: "))
+              encontrado1 = False
+              for disciplina in lista_disciplinas:
+                if disciplina["cod_disciplina"] == cod_disc_turma:
+                    disc_turma = disciplina["nome_disciplina"]
+                    encontrado1 =  True
+                    break
+              if encontrado1 == False:                    
+                print("Disciplina não encontrada!")
+                break
+          except ValueError:
+            print("Erro: O código digitado é inválido.")
+            #dicionário armazenando três variáveis sobre um estudante
+          nova_turma = {
+            "cod_turma" : codigo_turma,
+            "professor_turma" : prof_turma,
+            "disc_turma" : disc_turma 
+            }
+          #append para que a lista possa ser flexível e tenha um número de entradas variável
+          #adicionando o dicionário como uma entrada de uma lista 
+          lista_turmas.append(nova_turma)
+          print("\nTurma adicionada com sucesso!")
 
+def incluir_matriculas():
+   while True:
+        print("\nVocê selecionou a opção de incluir uma matrícula!")
+        try:
+          codigo_matricula = int(input('\nDigite o código da turma em que o estudante será inserido ou o número "0" para sair: '))
+          encontrado1 = False
+          for turma in lista_turmas:
+              if turma["cod_turma"] == codigo_matricula:
+                encontrado1 =  True
+          if encontrado1 == False or codigo_matricula == 0:                    
+                print("Turma não encontrada!")
+                break
+        except ValueError:
+           print("Código inválido!")
+           break
+        else:
+          try:
+              cod_matricula_estudante = int(input("\nDigite o código do estudante da turma: "))
+              encontrado = False
+              for estudante in lista_estudantes:
+                if estudante["cod_estudante"] == cod_matricula_estudante:
+                    matricula_estud = estudante["nome_estudante"]
+                    encontrado =  True
+                    break
+              if encontrado == False:                    
+                print("Estudante não encontrado!")
+                break
+          except ValueError:
+            print("Erro: O código digitado é inválido.")
+
+          #dicionário armazenando duas variáveis sobre uma matrícula
+          nova_matricula = {
+            "cod_matricula" : codigo_matricula,
+            "estud_matricula" : matricula_estud, 
+            }
+          #append para que a lista possa ser flexível e tenha um número de entradas variável
+          #adicionando o dicionário como uma entrada de uma lista 
+          lista_turmas.append(nova_turma)
+          print("\nMatrícula adicionada com sucesso!")
+
+#função para listar
 def listar_registros():
     if opcao == 1:
       #len(variavel) é uma forma de verificar se a lista esta vazia, pois se o comprimento dela (length) for zero, ela está vazia.
@@ -133,29 +268,66 @@ def listar_registros():
           nome = professor["nome_professor"]
           cpf = professor["cpf_professor"]
           print(f"Professor: {nome}, CPF: {cpf}, código: {cod}.")
+    elif opcao == 3:
+      print("\nVocê selecionou a opção de listar as disciplinas cadastradas!")
+      if len(lista_disciplinas) == 0:
+        print("\nNão há disciplinas cadastradas!")
+      else:
+        print("\nAqui está a lista de disciplinas: \n")
+        #for para listar em linhas diferentes
+        for disciplina in lista_disciplinas:
+          #percorre a lista e printa o nome, codigo e cpf de cada professor
+          cod = disciplina["cod_disciplina"]
+          nome = disciplina["nome_disciplina"]
+          print(f"Disciplina: {nome}, código: {cod}.")
+    elif opcao == 4:
+      print("\nVocê selecionou a opção de listar as turmas cadastradas!")
+      if len(lista_turmas) == 0:
+        print("\nNão há turmas cadastradas!")
+      else:
+        print("\nAqui está a lista de turmas: \n")
+        #for para listar em linhas diferentes
+        for turma in lista_turmas:
+          #percorre a lista e printa o nome, codigo e cpf de cada professor
+          cod = turma["cod_turma"]
+          prof = turma["professor_turma"]
+          disc = turma["disc_turma"]
+          print(f"Código: {cod}, professor: {prof}, disciplina: {disc}.")      
     else:
       print("===========EM DESENVOLVIMENTO===============")
-      
-def excluir_estudante():
-          if len(lista_estudantes) == 0:
-              print("\nNão há estudantes cadastrados!")
-              #print("\n===== EM DESENVOLVIMENTO =====")
-          else:
-            print("\nVocê selecionou a opção de excluir o cadastro de um estudante!")
-            try:
-              #print("\n===== EM DESENVOLVIMENTO =====")
-              excluir_estudante = int(input("\nInsira o código do estudante que deseja excluir: "))
-              encontrado = False
-              for estudante in lista_estudantes:
-                if estudante["cod_estudante"] == excluir_estudante:
-                    lista_estudantes.remove(estudante)
-                    print("Estudante removido com sucesso!")
-                    encontrado =  True
-                    break
-              if encontrado == False:                    
-                print("Estudante não encontrado!")
-            except ValueError:
-              print("Erro: O código digitado é inválido.")
+
+#função para excluir     
+def excluir_registro():       
+  dados = mapeamento_geral.get(opcao)
+  if not dados: #Se não existir a opção
+     print("Opção inválida!")
+     return
+  
+  lista = dados["lista"]
+  tipo = dados["tipo"]
+  codigo_solicitado = dados["campos"]["codigo"]
+
+  if len(lista) == 0:
+    print(f"Não há {tipo}s cadastrados!")
+    return
+  
+  print(f"\nVocê selecionou a opção de excluir um(a) {tipo}!")
+
+  try:
+     codigo = int(input(f"\nInsira o código do(a) {tipo} que deseja excluir: "))
+  except ValueError:
+     print("Código inválido!")
+     return
+  encontrado = False
+  for item in lista:
+    if item[codigo_solicitado] == codigo:
+       lista.remove(item)
+       print(f"{tipo.capitalize()} removido(a) com sucesso!")
+       encontrado = True
+       break
+  if encontrado == False:
+     print(f"{tipo.capitalize()} não encontrado(a)!")
+
 def alterar_estudante():
     if len(lista_estudantes) == 0:
             print("\nNão há estudantes cadastrados!")
@@ -199,9 +371,11 @@ def alterar_estudante():
       except ValueError:
         print("Erro: O código digitado é inválido.") 
 
+#while True para que o loop seja infinito (tem que por um break no meio senão fica infinito) 
 while True:
   #apresentando o menu inicial
   opcao = abrir_menu_principal()
+
     
   if opcao == 6:
     break
@@ -211,17 +385,18 @@ while True:
         opcao_secundaria = abrir_menu_secundario() 
 
         if  opcao_secundaria == 1:
-          if opcao == 1 or opcao == 2:
-            incluir_estudante_ou_professor()
-
-          elif opcao == 3:
-            incluir_disciplina()    
+          if 1 <= opcao <= 3:
+            incluir_estudante_professor_ou_disciplina()  
+          elif opcao == 4:
+            incluir_turma()
+          elif opcao == 5:
+            incluir_matriculas()
 
         elif  opcao_secundaria == 2:
             listar_registros()
         
         elif opcao_secundaria == 3:
-            excluir_estudante()
+            excluir_registro()
 
         elif opcao_secundaria == 4:
             alterar_estudante()
