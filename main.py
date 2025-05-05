@@ -1,10 +1,40 @@
 # Felipe Menoncin - Análise e Desenvolvimento de Sistemas
 
+import json
+
+arquivo_dados = "arquivo_dados.json"
+
 lista_estudantes = []
 lista_professores = []
 lista_disciplinas = []
 lista_turmas = []
 lista_matriculas = []
+
+def carregar_dados():
+  try:
+   with open("arquivo_dados.json", "r", encoding="utf-8") as arquivo:
+    conteudo = arquivo.read()
+    if not conteudo.strip():
+      return
+    dados = json.loads(conteudo)
+    lista_estudantes.extend(dados.get("estudantes",[]))
+    lista_professores.extend(dados.get("professores",[]))
+    lista_disciplinas.extend(dados.get("disciplinas",[]))
+    lista_turmas.extend(dados.get("turmas",[]))
+    lista_matriculas.extend(dados.get("matriculas",[]))
+  except:
+    pass
+
+def salvar_dados():
+   dados = {
+      "estudantes": lista_estudantes,
+      "professores": lista_professores,
+      "disciplinas": lista_disciplinas,
+      "turmas": lista_turmas,
+      "matriculas": lista_matriculas
+   }
+   with open(arquivo_dados, "w", encoding="utf-8") as arquivo:
+      json.dump(dados, arquivo, ensure_ascii=False)
 
 mapeamento_geral = {
   1: {
@@ -50,7 +80,6 @@ mapeamento_geral = {
          "estudante": "estud_matricula",
       }
   },
-
 }
 
 #função do menu principal
@@ -99,6 +128,7 @@ def incluir_estudante_professor_ou_disciplina():
           #append para que a lista possa ser flexível e tenha um número de entradas variável
           #adicionando o dicionário como uma entrada de uma lista 
           lista_estudantes.append(novo_estudante)
+          salvar_dados()
           print("\nEstudante adicionado com sucesso!")
       elif opcao == 2:
         print("\nVocê selecionou a opção de incluir um professor!")
@@ -121,6 +151,7 @@ def incluir_estudante_professor_ou_disciplina():
           #append para que a lista possa ser flexível e tenha um número de entradas variável
           #adicionando o dicionário como uma entrada de uma lista 
           lista_professores.append(novo_professor)
+          salvar_dados()
           print("\nProfessor adicionado com sucesso!")
       elif opcao == 3:
         print("\nVocê selecionou a opção de incluir uma disciplina!")
@@ -140,6 +171,7 @@ def incluir_estudante_professor_ou_disciplina():
           #append para que a lista possa ser flexível e tenha um número de entradas variável
           #adicionando o dicionário como uma entrada de uma lista 
           lista_disciplinas.append(nova_disciplina)
+          salvar_dados()
           print("\nDisciplina adicionada com sucesso!")
       else:
         break
@@ -196,6 +228,7 @@ def incluir_turma():
           #append para que a lista possa ser flexível e tenha um número de entradas variável
           #adicionando o dicionário como uma entrada de uma lista 
           lista_turmas.append(nova_turma)
+          salvar_dados()
           print("\nTurma adicionada com sucesso!")
 
 #função para incluir matrícula
@@ -236,7 +269,8 @@ def incluir_matriculas():
             }
           #append para que a lista possa ser flexível e tenha um número de entradas variável
           #adicionando o dicionário como uma entrada de uma lista 
-          lista_turmas.append(nova_matricula)
+          lista_matriculas.append(nova_matricula)
+          salvar_dados()
           print("\nMatrícula adicionada com sucesso!")
 
 #função para listar
@@ -294,8 +328,18 @@ def listar_registros():
           prof = turma["professor_turma"]
           disc = turma["disc_turma"]
           print(f"Código: {cod}, professor: {prof}, disciplina: {disc}.")      
-    else:
-      print("===========EM DESENVOLVIMENTO===============")
+    elif opcao == 5:
+      print("\nVocê selecionou a opção de listar as matrículas cadastradas!")
+      if len(lista_matriculas) == 0:
+        print("\nNão foram realizadas matrículas!")
+      else:
+        print("\nAqui está a lista de matrículas: \n")
+        #for para listar em linhas diferentes
+        for matricula in lista_matriculas:
+          #percorre a lista e printa o nome, codigo e cpf de cada professor
+          cod = matricula["cod_matricula"]
+          estud = matricula["estud_matricula"]
+          print(f"Código da matrícula: {cod}, estudante matriculado: {estud}.")      
 
 #função para excluir     
 def excluir_registro():       
@@ -323,6 +367,7 @@ def excluir_registro():
   for item in lista:
     if item[codigo_solicitado] == codigo:
        lista.remove(item)
+       salvar_dados()
        print(f"{tipo.capitalize()} removido(a) com sucesso!")
        encontrado = True
        break
@@ -433,7 +478,7 @@ def alterar_registro():
 
 
             #Verificação se o novo estudante está cadastrado antes de alterar na turma
-            elif campo_alterar == "estudante" and tipo == "turma":
+            elif campo_alterar == "estudante" and tipo == "matrícula":
               try:
                 cod_estudante = int(input("Digite o código do novo estudante: "))
                 estudante_encontrado = False
@@ -452,6 +497,7 @@ def alterar_registro():
               novo_valor = input(f"Digite o novo {campo_alterar}: ")
 
             item[campos[campo_alterar]] = novo_valor
+            salvar_dados()
             print(f"{campo_alterar.capitalize()} alterado(a) com sucesso!")
             encontrado = True      
 
@@ -462,11 +508,11 @@ def alterar_registro():
   if encontrado == False:
      print(f"{tipo.capitalize()} não encontrado(a)!")
 
+carregar_dados()
 #while True para que o loop seja infinito (tem que por um break no meio senão fica infinito) 
 while True:
   #apresentando o menu inicial
   opcao = abrir_menu_principal()
-
     
   if opcao == 6:
     break
