@@ -1,1 +1,1 @@
-Projeto da disciplina de Programação Orientada a Objetos do curso de Análise e Desenvolvimento de Sistemas da PUCPR.
+Projeto da disciplina de Fundamentos da Programação do curso de Análise e Desenvolvimento de Sistemas da PUCPR.
